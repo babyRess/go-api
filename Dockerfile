@@ -1,27 +1,31 @@
-# Use Go release candidate image since dependencies require Go 1.23+
-FROM golang:rc-alpine
+# Sử dụng Go release candidate trên Alpine (cho hiệu suất tốt hơn)
+FROM golang:rc-alpine AS builder
 
-# Set the working directory inside the container
+# Đặt thư mục làm việc
 WORKDIR /app
 
-# Copy go.mod and go.sum files first to leverage Docker cache
-COPY go.mod go.sum* ./
+# Copy go.mod và go.sum để tận dụng cache
+COPY go.mod go.sum ./
 
-# Download dependencies
+# Tải dependencies
 RUN go mod download
 
-# Copy the rest of the application source code
+# Copy toàn bộ mã nguồn vào container
 COPY . .
 
-# Build the application
+# Build ứng dụng (tạo file thực thi)
 RUN go build -o main .
 
-# Create a non-root user to run the application
-RUN adduser -D -g '' appuser
-USER appuser
+# Tạo container chạy ứng dụng (multi-stage build để giảm kích thước)
+FROM alpine:latest  
 
-# Expose port 8080 to the outside world
+WORKDIR /root/
+
+# Copy file thực thi từ builder stage
+COPY --from=builder /app/main .
+
+# Xuất port (Render sẽ tự động nhận diện)
 EXPOSE 8080
 
-# Command to run the executable
-CMD ["./main"] 
+# Chạy ứng dụng
+CMD ["./main"]
