@@ -1,4 +1,4 @@
-module github.com/babyress/babyress-api
+module api-g
 
 go 1.23.0
 
@@ -6,7 +6,7 @@ toolchain go1.23.7
 
 require (
 	github.com/gin-gonic/gin v1.9.1
-	google.golang.org/api v0.140.0
+	google.golang.org/api v0.128.0
 )
 
 require (
