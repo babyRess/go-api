@@ -37,4 +37,4 @@ COPY --from=builder /app/credentials/ /root/credentials/
 EXPOSE 8000
 
 # Chạy ứng dụng
-CMD ["./main"]
+CMD ["/app/main"]
