@@ -34,7 +34,7 @@ COPY --from=builder /app/main .
 COPY --from=builder /app/credentials/ /root/credentials/
 
 # Xuất port (Render sẽ tự động nhận diện)
-EXPOSE 8080
+EXPOSE 8000
 
 # Chạy ứng dụng
 CMD ["./main"]
