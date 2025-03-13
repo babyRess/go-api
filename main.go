@@ -100,8 +100,8 @@ func main() {
 	r.POST("/submit", submitHandler)
 
 	// Start the server
-	log.Println("Server running on port 8080")
-	if err := r.Run(":8080"); err != nil {
+	log.Println("Server running on port 8000")
+	if err := r.Run(":8000"); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
