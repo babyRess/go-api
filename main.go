@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"google.golang.org/api/option"
@@ -16,13 +17,27 @@ const (
 	// Replace with your actual spreadsheet ID
 	spreadsheetID = "1qNaI1ezqHf-V7DDG8A445oas1tLuARAKXsnqrMsxX3w"
 	sheetName     = "Log1"
-	// Path to the credentials file
-	credentialsFile = "credentials/credentials.json"
 )
+
+// getCredentialsPath returns the path to the credentials file
+// considering both local development and containerized environments
+func getCredentialsPath() string {
+	// Check if we're running in the Docker container
+	if _, err := os.Stat("/root/credentials/credentials.json"); err == nil {
+		return "/root/credentials/credentials.json"
+	}
+
+	// Default to local development path
+	return "credentials/credentials.json"
+}
 
 // writeToSheet appends a row of data to the Google Sheet
 func writeToSheet(data []string) error {
 	ctx := context.Background()
+
+	credentialsFile := getCredentialsPath()
+	log.Printf("Using credentials file: %s", credentialsFile)
+
 	srv, err := sheets.NewService(ctx, option.WithCredentialsFile(credentialsFile))
 	if err != nil {
 		return fmt.Errorf("unable to create sheets service: %v", err)
